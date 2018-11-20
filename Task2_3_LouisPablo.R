@@ -13,6 +13,14 @@ rpart.plot(DTvol)
 existprod$x5StarReviews <- NULL
 newprod$x5StarReviews <- NULL
 
+p2 <- plot_ly(existprod, x = ~PositiveServiceReview, y = ~x4StarReviews, z = ~Volume, color = ~ProductType) %>%
+  add_markers() %>%
+  layout(scene = list(xaxis = list(title = 'Positive Service Review'),
+                      yaxis = list(title = '4 Star Reviews'),
+                      zaxis = list(title = 'Volume')))
+         
+p2
+
 #----PreProcessing----
 #Dummifying the data
 newDataframe <- dummyVars('~ .', data = newprod)
@@ -593,33 +601,16 @@ newprod_dum_NAs_xcor_size_warr$PredVolumeXGBT <- predict(xgbTreemod7, newdata=ne
 newprod_dum_NAs_xcor_size_warr$PredVolumeRF <- predict(RFmodAll, newdata=newprod_dum_NAs_xcor_size_warr)
 
 
-newprod_dum_NAs_xcor_size_warr$PredVolumeXGBT
+newprod_dum_NAs_xcor_size_warr$Volume <- predict(RFmodAll, newdata=newprod_dum_NAs_xcor_size_warr)
 importance(RFmodAll)
 varImp(RFmodAll)
 
+# Boxplot of Predicted Volumes
+plot_ly(y=existprod_dum_NAs_xcor_size_warr[,19], type="box", name='Existing products') %>% 
+  add_boxplot(y=newprod_dum_NAs_xcor_size_warr[,19], type="box", name='New products') %>%
+  layout(title= paste('Boxplot of',colnames(existprod_dum_NAs_xcor_size_warr[19]),'for Existing and New Products'))
 
-p <- plot_ly(existprod, x = ~PositiveServiceReview, y = ~x4StarReviews, z = ~Volume,
-             marker = list(color = ~ProductType, colorscale = c('#FFE1A1', '#683531'), showscale = TRUE)) %>%
-  add_markers() %>%
-  layout(scene = list(xaxis = list(title = 'Positive Service Review'),
-                      yaxis = list(title = '4 Star Reviews'),
-                      zaxis = list(title = 'Volume')),
-         annotations = list(
-           x = 1.13,
-           y = 1.05,
-           text = '',
-           xref = 'paper',
-           yref = 'paper',
-           showarrow = FALSE
-         ))
-p
 
-p2 <- plot_ly(existprod, x = ~PositiveServiceReview, y = ~x4StarReviews, z = ~Volume, color = ~ProductType) %>%
-  add_markers() %>%
-  layout(scene = list(xaxis = list(title = 'Positive Service Review'),
-                      yaxis = list(title = '4 Star Reviews'),
-                      zaxis = list(title = 'Volume'))
-  
   
 write.csv(results,  file="SVM.csv")
 write.csv(resultsRF,  file="RF.csv")
