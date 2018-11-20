@@ -37,6 +37,11 @@ NoWarr <- filter(existprod, ProductType!="ExtendedWarranty")
 NewWarr <- filter(newprod, ProductType=="ExtendedWarranty")
 NewNoWarr <- filter(newprod, ProductType!="ExtendedWarranty")
 
+############### Outliers ##############
+
+NoWarr_NoOut <- filter(existprod, PositiveServiceReview<=250)
+NoWarr_NoOut <- filter(existprod, x2starReviews<=200)
+NoWarr_NoOut <- filter(existprod, Volume<=3000)
 
 ################## Dummify the data ######################
 
